@@ -94,7 +94,7 @@ int main(int argc, char* argv[]) {
 	// --------------------------------------------------------------------- //
 	ReadData(matList, filePath);
 
-	for (int i = 0; i < matList.size(); i++) {
+	for (unsigned int i = 0; i < matList.size(); i++) {
 		PrintAllOutput(matList[i]);
 	}
 	// --------------------------------------------------------------------- //
@@ -112,7 +112,7 @@ void ReadData(MatrixList& matList, string filePath) {
 	string line;
 	Matrix tempMat;
 	double tempDoub;
-	int rows;
+	unsigned int rows;
 
 	dataFile.open(filePath);
 	if (dataFile.is_open()) {
@@ -121,8 +121,8 @@ void ReadData(MatrixList& matList, string filePath) {
 			tempMat.clear();
 			tempMat.resize(rows);
 
-			for (int i = 0; i < rows; i++) {
-				for (int j = 0; j < rows + 1; j++) {
+			for (unsigned int i = 0; i < rows; i++) {
+				for (unsigned int j = 0; j < rows + 1; j++) {
 					dataFile >> tempDoub;
 					tempMat[i].push_back(tempDoub);
 				}
@@ -144,14 +144,14 @@ void NGE(Matrix& mat) {
 	// --------------------------------------------------------------------- //
 	// Naive Gaussian Eliminiation
 	// --------------------------------------------------------------------- //
-	int size = mat[0].size() - 1;
+	unsigned int size = mat[0].size() - 1;
 	double m;
 
-	for (int k = 0; k < size - 1; k++) {
-		for (int row = k + 1; row < size; row++) {
+	for (unsigned int k = 0; k < size - 1; k++) {
+		for (unsigned int row = k + 1; row < size; row++) {
 			m = mat[row][k]/mat[k][k];
 
-			for (int col = k; col < size + 1; col++)
+			for (unsigned int col = k; col < size + 1; col++)
 				mat[row][col] = mat[row][col] - m * mat[k][col];
 		}
 	}
@@ -162,22 +162,22 @@ void GEPP(Matrix& mat) {
 	// --------------------------------------------------------------------- //
 	// Gaussian Eliminiation with Partial Pivoting
 	// --------------------------------------------------------------------- //
-	int size = mat[0].size() - 1;
+	unsigned int size = mat[0].size() - 1;
 	double m;
-	int maxRow;
+	unsigned int maxRow;
 	double max;
 
-	for (int pivot = 0; pivot < size - 1; pivot++) {
-		for (int row = pivot; row < size - 1; row++)
+	for (unsigned int pivot = 0; pivot < size - 1; pivot++) {
+		for (unsigned int row = pivot; row < size - 1; row++)
 			maxRow = (mat[row][pivot] < mat[row + 1][pivot]) ? row + 1 : row;
 
 		if (maxRow != pivot)
 			mat[pivot].swap(mat[maxRow]);
 
-		for (int row = pivot + 1; row < size; row++) {
+		for (unsigned int row = pivot + 1; row < size; row++) {
 			m = mat[row][pivot]/mat[pivot][pivot];
 
-			for (int col = pivot; col < size + 1; col++)
+			for (unsigned int col = pivot; col < size + 1; col++)
 				mat[row][col] = mat[row][col] - m * mat[pivot][col];
 		}
 	}
@@ -188,22 +188,22 @@ vecD BackSubstitution(Matrix& mat) {
 	// --------------------------------------------------------------------- //
 	// Back Substitution (given an upper triangular matrix)
 	// --------------------------------------------------------------------- //
-	int size = mat.size();
-	int n = size - 1;
+	unsigned int size = mat.size();
+	unsigned int n = size - 1;
 	double sum;
 	vecD solutions;
 
 	solutions.resize(size);
 
-	for (int i = 0; i < size; i++)
+	for (unsigned int i = 0; i < size; i++)
 		solutions[i] = mat[i][size];
 
 	solutions[n] = solutions[n] / mat[n][n];
 
-	for (int i = n - 1; i >= 0; i--) {
+	for (unsigned int i = n - 1; i >= 0; i--) {
 		sum = 0;
 
-		for (int j = i + 1; j <= n; j++)
+		for (unsigned int j = i + 1; j <= n; j++)
 			sum += mat[i][j] * solutions[j];
 
 		solutions[i] = (solutions[i] - sum) / mat[i][i];
@@ -258,9 +258,9 @@ void PrintAugmentedMatrix(Matrix& mat) {
 	// --------------------------------------------------------------------- //
 	// PrintAugmentedMatrix
 	// --------------------------------------------------------------------- //
-	int i, j;
-	int size = mat[0].size() - 1;
-	int width = 8;
+	unsigned int i, j;
+	unsigned int size = mat[0].size() - 1;
+	unsigned int width = 8;
 	cout.precision(3);
 	for (i = 0; i < size; i++) {
 		for (j = 0; j < size + 1; j++) {
@@ -283,7 +283,7 @@ void PrintSolutions(vecD& solutions) {
 	// --------------------------------------------------------------------- //
 	// PrintSolutions
 	// --------------------------------------------------------------------- //
-	for (int i = 0; i < solutions.size(); i++)
+	for (unsigned int i = 0; i < solutions.size(); i++)
 		cout << "x" << i + 1 << " = " << solutions[i] << endl;
 
 } // end PrintSolutions
