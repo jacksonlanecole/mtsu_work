@@ -1,0 +1,429 @@
+\documentclass[letterpaper,10pt,titlepage]{report}
+\usepackage[letterpaper,margin=0.7in]{geometry}
+\usepackage{tikz} \tikzset{>=latex}
+\usepackage{pgfplots,tikz}
+\usetikzlibrary{decorations.markings,arrows, calc, angles, quotes, decorations.pathmorphing,patterns, decorations.pathreplacing}
+\pgfplotsset{compat=newest}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\mathtoolsset{showonlyrefs}
+\usepackage{amssymb}
+\usepackage{gensymb}
+\usepackage{empheq}
+\newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}
+\usepackage{pdfpages}
+\pagenumbering{gobble}
+\newcommand{\itemn}{\newpage \setcounter{equation}{0} \item}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{esint}
+\usepackage{dirtytalk}
+\usepackage{mathcomp}
+\usepackage{mdframed}
+\usepackage[pdfpagelabels]{hyperref}
+%\begin{mdframed}[backgroundcolor=gray!20]
+%\vspace{6pt}
+%\end{mdframed}
+\usepackage[margin=0.5in]{caption} %Allows for use of \caption* for non-labeled captions
+\usepackage{graphicx}
+\newcommand{\Lagr}{\mathcal{L}}
+\graphicspath{ {images/} }
+\usepackage{fancyhdr}
+
+\newcommand{\infinitesum}[2]{\sum_{#1 = #2}^{\infty}}
+\newcommand{\goodprime}{^{\prime}}
+\newcommand{\tsi}[1]{\int_{\phi=0}^{2\pi}\int_{\theta=0}^{\pi}\int_{r=0}^{#1}}
+\newcommand{\functionof}[2]{#1\left(#2\right)}
+\newcommand{\unit}[1]{\,\hat{\bm{#1}}}
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\paren}[1]{\left(#1\right)}
+\newcommand{\brackets}[1]{\left[#1\right]}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\eval}[3]{\left.#1\right|_{#2}^{#3}}
+\newcommand{\anglers}[1]{\langle #1 \rangle}
+\newcommand{\sinp}[1]{\sin{\paren{#1}}}
+\newcommand{\cosp}[1]{\cos{\paren{#1}}}
+\newcommand{\tanp}[1]{\tan{\paren{#1}}}
+
+\newcommand{\sinpR}[2]{\sin^{#2}{\paren{#1}}}
+\newcommand{\cospR}[2]{\cos^{#2}{\paren{#1}}}
+\newcommand{\tanpR}[2]{\tan^{#2}{\paren{#1}}}
+
+
+\newcommand{\expp}[1]{\exp\paren{#1}}
+\newcommand{\thefrac}{\dfrac{n\pi}{d}}
+\newcommand{\assolegendre}[1]{P_{#1}\paren{\cos{\theta}}}
+
+\newcommand{\partialwoa}[1]{\dfrac{\partial}{\partial #1}}
+\newcommand{\partiald}[2]{\dfrac{\partial}{\partial #2}\brackets{#1}}
+\newcommand{\partialdd}[2]{\dfrac{\partial^2}{\partial^2 #2}\brackets{#1}}
+\newcommand{\derivative}[2]{\dfrac{d #1}{d #2}}
+\newcommand{\integral}[2]{\int_{#1}^{#2}}
+
+\newcommand{\sn}[2]{#1\times10^{#2}}
+
+%\begin{mdframed}[backgroundcolor=gray!20]
+%\vspace{6pt}
+%\end{mdframed}
+
+\newcommand{\homeworkTitle}{Lab 05}
+\newcommand{\homeworkDueDate}{October 04, 2018}
+\newcommand{\homeworkClass}{MATH 3180}
+\newcommand{\homeworkClassInstructor}{Dr. Seo}
+\newcommand{\homeworkAuthorName}{\textbf{Jackson Cole}}
+
+\title{\homeworkTitle\\
+\homeworkClass: Numerical Analysis}
+\author{Jackson Cole}
+\date{October 04, 2018}
+
+
+\begin{document}
+\maketitle
+\tableofcontents
+% The following makes equations look much nicer
+\setlength{\abovedisplayskip}{10pt}
+\setlength{\belowdisplayskip}{10pt}
+\setlength{\abovedisplayshortskip}{10pt}
+\setlength{\belowdisplayshortskip}{10pt}
+\includepdf[pages=-]{Lab5_LinearSystems_Fall_2018.pdf}
+\topmargin=-0.45in
+\headsep=0.25in
+
+
+\pagestyle{fancy}
+\rhead{\homeworkAuthorName}
+\chead{\homeworkClass\ (\homeworkClassInstructor): \homeworkTitle}
+%% \rhead{\firstxmark}
+%% \lfoot{\lastxmark}
+%% \cfoot{\thepage}
+
+\section{Description of Experiment}
+In this experiment, our goal was to implement a Naive Gaussian Elimination
+method as well as a method for Gaussian Elimination with Partial Pivoting in
+C++. Both of these methods also require implementation of back substitution
+given a general matrix. We were also asked to read in data from a data file of a
+given format (this data is shown in the next section, but is read in from a data
+file in practice). We were to implement these methods to work for all data and
+for other data files as well.
+
+\section{Program Input}
+\begin{verbatim}
+2
+3     2     4
+-6    -4    6
+ 
+2
+6     -3    6
+-2    1     -2
+ 
+2
+0     2     4
+1     -1    5
+ 
+3
+1     1     2     4
+1     1     0     2    
+0     1     1     0
+ 
+3
+3     2     -5    0
+2     -3    1     0
+1     4     -1    4
+ 
+3
+3     4     3     10
+1     5     -1    7
+6     3     7     15
+ 
+4
+6     -2    2     4     16
+12    -8    6     10    26
+3     -13   9     3     -19
+-6    4     1     -18   -34
+ 
+4
+1     -1    2     1     1
+3     2     1     4     1
+5     8     6     3     1
+4     2     5     3     -1
+ 
+5
+9     3     2     0     7     35
+7     6     9     6     4     58
+2     7     7     8     2     53
+0     9     7     2     2     37
+7     3     6     4     3     39
+\end{verbatim}
+
+\section{Program Output}
+\begin{verbatim}
+You may now enter the path to a data file or choose the
+default by pressing enter. The default is './data.txt'.
+>
+********************************************************************************
+Original Augmented Matrix:
+   3.000   2.000   |   4.000
+  -6.000  -4.000   |   6.000
+
+Naive Gaussian Elimination
+> Upper triangular matrix obtained:
+   3.000   2.000   |   4.000
+   0.000   0.000   |  14.000
+> SOLUTION:
+x1 = -inf
+x2 = inf
+
+Gaussian Elimination with Partial Pivoting
+> Upper triangular matrix obtained:
+   3.000   2.000   |   4.000
+   0.000   0.000   |  14.000
+> SOLUTION:
+x1 = -inf
+x2 = inf
+********************************************************************************
+
+********************************************************************************
+Original Augmented Matrix:
+   6.000  -3.000   |   6.000
+  -2.000   1.000   |  -2.000
+
+Naive Gaussian Elimination
+> Upper triangular matrix obtained:
+   6.000  -3.000   |   6.000
+   0.000   0.000   |   0.000
+> SOLUTION:
+x1 = nan
+x2 = nan
+
+Gaussian Elimination with Partial Pivoting
+> Upper triangular matrix obtained:
+   6.000  -3.000   |   6.000
+   0.000   0.000   |   0.000
+> SOLUTION:
+x1 = nan
+x2 = nan
+********************************************************************************
+
+********************************************************************************
+Original Augmented Matrix:
+   0.000   2.000   |   4.000
+   1.000  -1.000   |   5.000
+
+Naive Gaussian Elimination
+> Upper triangular matrix obtained:
+   0.000   2.000   |   4.000
+     nan    -inf   |    -inf
+> SOLUTION:
+x1 = nan
+x2 = nan
+
+Gaussian Elimination with Partial Pivoting
+> Upper triangular matrix obtained:
+   1.000  -1.000   |   5.000
+   0.000   2.000   |   4.000
+> SOLUTION:
+x1 = 7.000
+x2 = 2.000
+********************************************************************************
+
+********************************************************************************
+Original Augmented Matrix:
+   1.000   1.000   2.000   |   4.000
+   1.000   1.000   0.000   |   2.000
+   0.000   1.000   1.000   |   0.000
+
+Naive Gaussian Elimination
+> Upper triangular matrix obtained:
+   1.000   1.000   2.000   |   4.000
+   0.000   0.000  -2.000   |  -2.000
+   0.000     nan     inf   |     inf
+> SOLUTION:
+x1 = nan
+x2 = nan
+x3 = nan
+
+Gaussian Elimination with Partial Pivoting
+> Upper triangular matrix obtained:
+   1.000   1.000   0.000   |   2.000
+   0.000   1.000   1.000   |   0.000
+   0.000   0.000   2.000   |   2.000
+> SOLUTION:
+x1 = 3.000
+x2 = -1.000
+x3 = 1.000
+********************************************************************************
+
+********************************************************************************
+Original Augmented Matrix:
+   3.000   2.000  -5.000   |   0.000
+   2.000  -3.000   1.000   |   0.000
+   1.000   4.000  -1.000   |   4.000
+
+Naive Gaussian Elimination
+> Upper triangular matrix obtained:
+   3.000   2.000  -5.000   |   0.000
+   0.000  -4.333   4.333   |   0.000
+   0.000   0.000   4.000   |   4.000
+> SOLUTION:
+x1 = 1.000
+x2 = 1.000
+x3 = 1.000
+
+Gaussian Elimination with Partial Pivoting
+> Upper triangular matrix obtained:
+   2.000  -3.000   1.000   |   0.000
+   0.000   6.500  -6.500   |   0.000
+   0.000   0.000   4.000   |   4.000
+> SOLUTION:
+x1 = 1.000
+x2 = 1.000
+x3 = 1.000
+********************************************************************************
+
+********************************************************************************
+Original Augmented Matrix:
+   3.000   4.000   3.000   |  10.000
+   1.000   5.000  -1.000   |   7.000
+   6.000   3.000   7.000   |  15.000
+
+Naive Gaussian Elimination
+> Upper triangular matrix obtained:
+   3.000   4.000   3.000   |  10.000
+   0.000   3.667  -2.000   |   3.667
+   0.000   0.000  -1.727   |   0.000
+> SOLUTION:
+x1 = 2.000
+x2 = 1.000
+x3 = -0.000
+
+Gaussian Elimination with Partial Pivoting
+> Upper triangular matrix obtained:
+   6.000   3.000   7.000   |  15.000
+   0.000   4.500  -2.167   |   4.500
+   0.000   0.000   0.704   |   0.000
+> SOLUTION:
+x1 = 2.000
+x2 = 1.000
+x3 = 0.000
+********************************************************************************
+
+********************************************************************************
+Original Augmented Matrix:
+   6.000  -2.000   2.000   4.000   |  16.000
+  12.000  -8.000   6.000  10.000   |  26.000
+   3.000 -13.000   9.000   3.000   | -19.000
+  -6.000   4.000   1.000 -18.000   | -34.000
+
+Naive Gaussian Elimination
+> Upper triangular matrix obtained:
+   6.000  -2.000   2.000   4.000   |  16.000
+   0.000  -4.000   2.000   2.000   |  -6.000
+   0.000   0.000   2.000  -5.000   |  -9.000
+   0.000   0.000   0.000  -3.000   |  -3.000
+> SOLUTION:
+x1 = 3.000
+x2 = 1.000
+x3 = -2.000
+x4 = 1.000
+
+Gaussian Elimination with Partial Pivoting
+> Upper triangular matrix obtained:
+   3.000 -13.000   9.000   3.000   | -19.000
+   0.000  24.000 -16.000  -2.000   |  54.000
+   0.000   0.000   4.333 -13.833   | -22.500
+   0.000   0.000   0.000  -0.462   |  -0.462
+> SOLUTION:
+x1 = 3.000
+x2 = 1.000
+x3 = -2.000
+x4 = 1.000
+********************************************************************************
+
+********************************************************************************
+Original Augmented Matrix:
+   1.000  -1.000   2.000   1.000   |   1.000
+   3.000   2.000   1.000   4.000   |   1.000
+   5.000   8.000   6.000   3.000   |   1.000
+   4.000   2.000   5.000   3.000   |  -1.000
+
+Naive Gaussian Elimination
+> Upper triangular matrix obtained:
+   1.000  -1.000   2.000   1.000   |   1.000
+   0.000   5.000  -5.000   1.000   |  -2.000
+   0.000   0.000   9.000  -4.600   |   1.200
+   0.000   0.000   0.000  -0.667   |  -3.000
+> SOLUTION:
+x1 = -7.233
+x2 = 1.133
+x3 = 2.433
+x4 = 4.500
+
+Gaussian Elimination with Partial Pivoting
+> Upper triangular matrix obtained:
+   5.000   8.000   6.000   3.000   |   1.000
+   0.000  -2.600   0.800   0.400   |   0.800
+   0.000   0.000  -1.154  -0.077   |  -3.154
+   0.000   0.000   0.000   2.000   |   9.000
+> SOLUTION:
+x1 = -7.233
+x2 = 1.133
+x3 = 2.433
+x4 = 4.500
+********************************************************************************
+
+********************************************************************************
+Original Augmented Matrix:
+   9.000   3.000   2.000   0.000   7.000   |  35.000
+   7.000   6.000   9.000   6.000   4.000   |  58.000
+   2.000   7.000   7.000   8.000   2.000   |  53.000
+   0.000   9.000   7.000   2.000   2.000   |  37.000
+   7.000   3.000   6.000   4.000   3.000   |  39.000
+
+Naive Gaussian Elimination
+> Upper triangular matrix obtained:
+   9.000   3.000   2.000   0.000   7.000   |  35.000
+   0.000   3.667   7.444   6.000  -1.444   |  30.778
+   0.000   0.000  -6.303  -2.364   2.939   |  -7.939
+   0.000   0.000   0.000  -8.500   0.288   | -24.346
+   0.000   0.000   0.000   0.000  -0.681   |  -2.724
+> SOLUTION:
+x1 = 0.000
+x2 = 1.000
+x3 = 2.000
+x4 = 3.000
+x5 = 4.000
+
+Gaussian Elimination with Partial Pivoting
+> Upper triangular matrix obtained:
+   7.000   3.000   6.000   4.000   3.000   |  39.000
+   0.000   9.000   7.000   2.000   2.000   |  37.000
+   0.000   0.000   0.667   1.333   0.333   |   6.667
+   0.000   0.000   0.000   5.143   5.857   |  38.857
+   0.000   0.000   0.000   0.000  -5.574   | -22.296
+> SOLUTION:
+x1 = 0.000
+x2 = 1.000
+x3 = 2.000
+x4 = 3.000
+x5 = 4.000
+********************************************************************************
+\end{verbatim}
+
+\section{Conclusion/Findings}
+We see clearly from several of the earlier matrices in this experiment that the
+Naive Gaussian Elimination method indeed fails as a result of division by 0. In
+many cases, we recieve a \texttt{nan} value for several of our solutions. This
+problem is remedied by employing the method of partial pivoting during Gaussian
+Elimination with Partial Pivoting. In any case, the resulting solutions from
+either method are obtained by simply doing back substitution, which in both
+cases is an identical process.
+
+Given the power of modern computing, it seems as though there would not be very
+many cases where performing Naive Gaussian Elimination in practice would be
+beneficial, as the Gaussian Elimination with Partial Pivoting provides better
+results in every case.
+
+\end{document}
+
