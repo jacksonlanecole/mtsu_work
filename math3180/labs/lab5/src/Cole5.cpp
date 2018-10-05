@@ -165,7 +165,6 @@ void GEPP(Matrix& mat) {
 	unsigned int size = mat[0].size() - 1;
 	double m;
 	unsigned int maxRow;
-	double max;
 
 	for (unsigned int pivot = 0; pivot < size - 1; pivot++) {
 		for (unsigned int row = pivot; row < size - 1; row++)
