@@ -1,0 +1,109 @@
+\documentclass[letterpaper,10pt,titlepage]{report}
+\usepackage[letterpaper,margin=0.7in]{geometry}
+\usepackage{tikz} \tikzset{>=latex}
+\usepackage{pgfplots,tikz}
+\usetikzlibrary{decorations.markings,arrows, calc, angles, quotes, decorations.pathmorphing,patterns, decorations.pathreplacing}
+\pgfplotsset{compat=newest}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\mathtoolsset{showonlyrefs}
+\usepackage{amssymb}
+\usepackage{gensymb}
+\usepackage{empheq}
+\newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}
+\usepackage{pdfpages}
+\pagenumbering{gobble}
+\newcommand{\itemn}{\newpage \setcounter{equation}{0} \item}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{esint}
+\usepackage{dirtytalk}
+\usepackage{mathcomp}
+\usepackage{mdframed}
+\usepackage[pdfpagelabels]{hyperref}
+%\begin{mdframed}[backgroundcolor=gray!20]
+%\vspace{6pt}
+%\end{mdframed}
+\usepackage[margin=0.5in]{caption} %Allows for use of \caption* for non-labeled captions
+\usepackage{graphicx}
+\newcommand{\Lagr}{\mathcal{L}}
+\graphicspath{ {images/} }
+\usepackage{fancyhdr}
+
+\newcommand{\infinitesum}[2]{\sum_{#1 = #2}^{\infty}}
+\newcommand{\goodprime}{^{\prime}}
+\newcommand{\tsi}[1]{\int_{\phi=0}^{2\pi}\int_{\theta=0}^{\pi}\int_{r=0}^{#1}}
+\newcommand{\functionof}[2]{#1\left(#2\right)}
+\newcommand{\unit}[1]{\,\hat{\bm{#1}}}
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\paren}[1]{\left(#1\right)}
+\newcommand{\brackets}[1]{\left[#1\right]}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\eval}[3]{\left.#1\right|_{#2}^{#3}}
+\newcommand{\anglers}[1]{\langle #1 \rangle}
+\newcommand{\sinp}[1]{\sin{\paren{#1}}}
+\newcommand{\cosp}[1]{\cos{\paren{#1}}}
+\newcommand{\tanp}[1]{\tan{\paren{#1}}}
+
+\newcommand{\sinpR}[2]{\sin^{#2}{\paren{#1}}}
+\newcommand{\cospR}[2]{\cos^{#2}{\paren{#1}}}
+\newcommand{\tanpR}[2]{\tan^{#2}{\paren{#1}}}
+
+
+\newcommand{\expp}[1]{\exp\paren{#1}}
+\newcommand{\thefrac}{\dfrac{n\pi}{d}}
+\newcommand{\assolegendre}[1]{P_{#1}\paren{\cos{\theta}}}
+
+\newcommand{\partialwoa}[1]{\dfrac{\partial}{\partial #1}}
+\newcommand{\partiald}[2]{\dfrac{\partial}{\partial #2}\brackets{#1}}
+\newcommand{\partialdd}[2]{\dfrac{\partial^2}{\partial^2 #2}\brackets{#1}}
+\newcommand{\derivative}[2]{\dfrac{d #1}{d #2}}
+\newcommand{\integral}[2]{\int_{#1}^{#2}}
+
+\newcommand{\sn}[2]{#1\times10^{#2}}
+
+%\begin{mdframed}[backgroundcolor=gray!20]
+%\vspace{6pt}
+%\end{mdframed}
+
+\newcommand{\homeworkTitle}{Lab 07}
+\newcommand{\homeworkDueDate}{October 18, 2018}
+\newcommand{\homeworkClass}{MATH 3180}
+\newcommand{\className}{Numerical Analysis}
+\newcommand{\homeworkClassInstructor}{Dr. Seo}
+\newcommand{\homeworkAuthorName}{Jackson Cole}
+
+\title{\homeworkTitle\\
+\homeworkClass: \className}
+\author{\homeworkAuthorName}
+\date{\homeworkDueDate}
+
+
+\begin{document}
+\maketitle
+\tableofcontents
+% The following makes equations look much nicer
+\setlength{\abovedisplayskip}{10pt}
+\setlength{\belowdisplayskip}{10pt}
+\setlength{\abovedisplayshortskip}{10pt}
+\setlength{\belowdisplayshortskip}{10pt}
+\includepdf[pages=-]{content/intropages-Labs6_and_7.pdf}
+\topmargin=-0.45in
+\headsep=0.25in
+
+
+\pagestyle{fancy}
+\rhead{\homeworkAuthorName}
+\chead{\homeworkClass\ (\homeworkClassInstructor): \homeworkTitle}
+
+\section{Description of Experiment}
+
+\section{Program Input}
+
+\section{Program Output}
+
+\section{Conclusion/Findings}
+
+\end{document}
+
