@@ -1,4 +1,4 @@
 #!/bin/sh
 
 make
-./bin/main
+./bin/main < data/test.txt
