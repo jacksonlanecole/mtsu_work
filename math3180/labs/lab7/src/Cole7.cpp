@@ -96,7 +96,7 @@ int main(int argc, char* argv[]) {
 	// --------------------------------------------------------------------- //
 	ComputeDividedDifferences(DD, yVec, xVec, true);
 
-	for (int i = 0; i < xVals.size(); i++) {
+	for (unsigned int i = 0; i < xVals.size(); i++) {
 		results.push_back(InterpolatedFunction(xVals[i], DD, yVec, xVec));
 		fnResults.push_back(Function(xVals[i]));
 		absDiff.push_back(abs(fnResults[i] - results[i]));
@@ -172,7 +172,7 @@ void PrintDividedDifferences(Array1D& DD, int iteration) {
 	cout << "\nIteration: " << iteration << endl;
 	cout << string(15, '-') << endl;
 
-	for (int j = 0; j < DD.size(); j++) {
+	for (unsigned int j = 0; j < DD.size(); j++) {
 		cout << setprecision(10) << fixed << setw(15) << right;
 		cout << DD[j] << endl;
 	}
@@ -181,7 +181,7 @@ void PrintDividedDifferences(Array1D& DD, int iteration) {
 
 double InterpolatedFunction(
 	double x, Array1D& DD, Array1D& yVec, Array1D& xVec) {
-	double n = DD.size() - 1;
+	int n = DD.size() - 1;
 	double result = DD[n];
 
 	// The interpolated polynomial evaluated using Horner's algorithm
