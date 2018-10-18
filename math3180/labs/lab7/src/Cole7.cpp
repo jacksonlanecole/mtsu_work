@@ -149,7 +149,7 @@ void ComputeDividedDifferences(Array1D& DD, Array1D& yVec, Array1D& xVec,
 		if (print)
 			PrintDividedDifferences(DD, i - 1);
 
-		for (int j = size; j >= i; j--)
+		for (int j = size - 1; j >= i; j--)
 			DD[j] = (DD[j] - DD[j-1])/(xVec[j] - xVec[j-i]);
 
 	}
