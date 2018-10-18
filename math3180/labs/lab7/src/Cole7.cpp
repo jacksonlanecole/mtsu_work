@@ -55,7 +55,7 @@ void   SetupyVec(Array1D&, Array1D&);
        // Sets up the vector containing y values using the function given
 double InterpolatedFunction(double, Array1D&, Array1D&, Array1D&);
        // The interpolated function from the data points, using nested
-	   //     multiplication
+       //     multiplication
 void   PrintResults(Array1D&, Array1D&, Array1D&, Array1D&);
        // Prints the results of the interpolation
 // ------------------------------------------------------------------------- //
@@ -68,8 +68,8 @@ int main(int argc, char* argv[]) {
 	string xLine;        // string to hold the input, space separated values
 	string dummyString;  // dummy string to hold information about the number
 	                     //     of values being entered, as this implementation
-						 //     is using vectors and does not care about the
-						 //     number being input
+	                     //     is using vectors and does not care about the
+	                     //     number being input
 	// --------------------------------------------------------------------- //
 
 	// --------------------------------------------------------------------- //
@@ -113,13 +113,11 @@ int main(int argc, char* argv[]) {
 // Functions
 // ------------------------------------------------------------------------- //
 double Function(double x) {
-	//                IN
 	return 1/(pow(x, 2) + 1);
 }
 
 
 void Load1DVec(string csString, Array1D& vec) {
-	//                      IN,          OUT
 	stringstream ss(csString);
 	string val;
 
@@ -131,7 +129,6 @@ void Load1DVec(string csString, Array1D& vec) {
 
 
 void SetupyVec(Array1D& yVec, Array1D& xVec) {
-	//                   OUT             IN
 	int size = xVec.size();
 
 	for (int i = 0; i < size; i++) {
@@ -142,9 +139,7 @@ void SetupyVec(Array1D& yVec, Array1D& xVec) {
 
 
 void ComputeDividedDifferences(Array1D& DD, Array1D& yVec, Array1D& xVec,
-	//                                 OUT,            IN,            IN,
 	bool print = false) {
-	//              IN
 	int size = yVec.size();
 	int i;
 	for (i = 0; i < size; i++)
@@ -164,7 +159,6 @@ void ComputeDividedDifferences(Array1D& DD, Array1D& yVec, Array1D& xVec,
 
 
 void PrintDividedDifferences(Array1D& DD, int iteration) {
-	//                                IN,            IN
 	static bool headerPrinted = false; // keeps track of whether the header
 	                                   //     has been printed
 
@@ -187,7 +181,6 @@ void PrintDividedDifferences(Array1D& DD, int iteration) {
 
 double InterpolatedFunction(
 	double x, Array1D& DD, Array1D& yVec, Array1D& xVec) {
-	//    IN,          IN,            IN,            IN
 	double n = DD.size() - 1;
 	double result = DD[n];
 
