@@ -1,0 +1,268 @@
+\documentclass[letterpaper,10pt,titlepage]{report}
+\usepackage[letterpaper,margin=0.7in]{geometry}
+\usepackage{tikz} \tikzset{>=latex}
+\usepackage{pgfplots,tikz}
+\usetikzlibrary{decorations.markings,arrows, calc, angles, quotes, decorations.pathmorphing,patterns, decorations.pathreplacing}
+\pgfplotsset{compat=newest}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\mathtoolsset{showonlyrefs}
+\usepackage{amssymb}
+\usepackage{gensymb}
+\usepackage{empheq}
+\newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}
+\usepackage{pdfpages}
+\pagenumbering{gobble}
+\newcommand{\itemn}{\newpage \setcounter{equation}{0} \item}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{esint}
+\usepackage{dirtytalk}
+\usepackage{mathcomp}
+\usepackage{mdframed}
+\usepackage[pdfpagelabels]{hyperref}
+%\begin{mdframed}[backgroundcolor=gray!20]
+%\vspace{6pt}
+%\end{mdframed}
+\usepackage[margin=0.5in]{caption} %Allows for use of \caption* for non-labeled captions
+\usepackage{graphicx}
+\newcommand{\Lagr}{\mathcal{L}}
+\graphicspath{ {images/} }
+\usepackage{fancyhdr}
+
+\newcommand{\infinitesum}[2]{\sum_{#1 = #2}^{\infty}}
+\newcommand{\goodprime}{^{\prime}}
+\newcommand{\tsi}[1]{\int_{\phi=0}^{2\pi}\int_{\theta=0}^{\pi}\int_{r=0}^{#1}}
+\newcommand{\functionof}[2]{#1\left(#2\right)}
+\newcommand{\unit}[1]{\,\hat{\bm{#1}}}
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\paren}[1]{\left(#1\right)}
+\newcommand{\brackets}[1]{\left[#1\right]}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\eval}[3]{\left.#1\right|_{#2}^{#3}}
+\newcommand{\anglers}[1]{\langle #1 \rangle}
+\newcommand{\sinp}[1]{\sin{\paren{#1}}}
+\newcommand{\cosp}[1]{\cos{\paren{#1}}}
+\newcommand{\tanp}[1]{\tan{\paren{#1}}}
+
+\newcommand{\sinpR}[2]{\sin^{#2}{\paren{#1}}}
+\newcommand{\cospR}[2]{\cos^{#2}{\paren{#1}}}
+\newcommand{\tanpR}[2]{\tan^{#2}{\paren{#1}}}
+
+
+\newcommand{\expp}[1]{\exp\paren{#1}}
+\newcommand{\thefrac}{\dfrac{n\pi}{d}}
+\newcommand{\assolegendre}[1]{P_{#1}\paren{\cos{\theta}}}
+
+\newcommand{\partialwoa}[1]{\dfrac{\partial}{\partial #1}}
+\newcommand{\partiald}[2]{\dfrac{\partial}{\partial #2}\brackets{#1}}
+\newcommand{\partialdd}[2]{\dfrac{\partial^2}{\partial^2 #2}\brackets{#1}}
+\newcommand{\derivative}[2]{\dfrac{d #1}{d #2}}
+\newcommand{\integral}[2]{\int_{#1}^{#2}}
+
+\newcommand{\sn}[2]{#1\times10^{#2}}
+
+%\begin{mdframed}[backgroundcolor=gray!20]
+%\vspace{6pt}
+%\end{mdframed}
+
+\newcommand{\homeworkTitle}{Lab 07}
+\newcommand{\homeworkDueDate}{October 18, 2018}
+\newcommand{\homeworkClass}{MATH 3180}
+\newcommand{\className}{Numerical Analysis}
+\newcommand{\homeworkClassInstructor}{Dr. Seo}
+\newcommand{\homeworkAuthorName}{Jackson Cole}
+
+\title{\homeworkTitle\\
+\homeworkClass: \className}
+\author{\homeworkAuthorName}
+\date{\homeworkDueDate}
+
+
+\begin{document}
+\maketitle
+\tableofcontents
+% The following makes equations look much nicer
+\setlength{\abovedisplayskip}{10pt}
+\setlength{\belowdisplayskip}{10pt}
+\setlength{\abovedisplayshortskip}{10pt}
+\setlength{\belowdisplayshortskip}{10pt}
+\includepdf[pages=-]{content/intropages-Labs6_and_7.pdf}
+\topmargin=-0.45in
+\headsep=0.25in
+
+
+\pagestyle{fancy}
+\rhead{\homeworkAuthorName}
+\chead{\homeworkClass\ (\homeworkClassInstructor): \homeworkTitle}
+
+\section{Description of Experiment}
+In this experiment, we were tasked with constructing the Newtonian form of the
+interpolating polynomial for the function
+\begin{equation}
+    \functionof{f}{x} = \dfrac{1}{x^2 + 1}.
+\end{equation}
+We then proceed to evaluating our constructed interpolating polynomial at
+several data points within the bounds of the given data points (interpolating).
+The program input and output are given below, where the program input is assumed
+to be of the form given (i.e. number of values, followed by space separated
+values, followed by number of values, followed by space separated values).
+
+\section{Program Input}
+\begin{verbatim}
+9
+-8 -6 -4 -2 0 2 4 6 8
+17
+-8 -7 -6 -5 -4 -3 -2 -1 0 1 2 3 4 5 6 7 8
+\end{verbatim}
+
+\section{Program Output}
+\begin{verbatim}
+How many data points?  9
+Enter x values separated by spaces: -8 -6 -4 -2 0 2 4 6 8
+How many test values?  17
+Enter all x values separated by spaces: -8 -7 -6 -5 -4 -3 -2 -1 0 1 2 3 4 5 6 7 8
+
+----------------------------------------
+Divided Differences
+----------------------------------------
+Iteration: 0
+---------------
+   0.0153846154
+   0.0270270270
+   0.0588235294
+   0.2000000000
+   1.0000000000
+   0.2000000000
+   0.0588235294
+   0.0270270270
+   0.0153846154
+
+Iteration: 1
+---------------
+   0.0153846154
+   0.0058212058
+   0.0158982512
+   0.0705882353
+   0.4000000000
+  -0.4000000000
+  -0.0705882353
+  -0.0158982512
+  -0.0058212058
+
+Iteration: 2
+---------------
+   0.0153846154
+   0.0058212058
+   0.0025192613
+   0.0136724960
+   0.0823529412
+  -0.2000000000
+   0.0823529412
+   0.0136724960
+   0.0025192613
+
+Iteration: 3
+---------------
+   0.0153846154
+   0.0058212058
+   0.0025192613
+   0.0018588724
+   0.0114467409
+  -0.0470588235
+   0.0470588235
+  -0.0114467409
+  -0.0018588724
+
+Iteration: 4
+---------------
+   0.0153846154
+   0.0058212058
+   0.0025192613
+   0.0018588724
+   0.0011984836
+  -0.0073131955
+   0.0117647059
+  -0.0073131955
+   0.0011984836
+
+Iteration: 5
+---------------
+   0.0153846154
+   0.0058212058
+   0.0025192613
+   0.0018588724
+   0.0011984836
+  -0.0008511679
+   0.0019077901
+  -0.0019077901
+   0.0008511679
+
+Iteration: 6
+---------------
+   0.0153846154
+   0.0058212058
+   0.0025192613
+   0.0018588724
+   0.0011984836
+  -0.0008511679
+   0.0002299132
+  -0.0003179650
+   0.0002299132
+
+Iteration: 7
+---------------
+   0.0153846154
+   0.0058212058
+   0.0025192613
+   0.0018588724
+   0.0011984836
+  -0.0008511679
+   0.0002299132
+  -0.0000391342
+   0.0000391342
+
+Iteration: 8
+---------------
+   0.0153846154
+   0.0058212058
+   0.0025192613
+   0.0018588724
+   0.0011984836
+  -0.0008511679
+   0.0002299132
+  -0.0000391342
+   0.0000048918
+
+-----------------------------------------------------------------------------------
+  i                   x                f(x)               P8(x)      |f(x) - P8(x)|
+-----------------------------------------------------------------------------------
+  0              -8.000        0.0153846154        0.0153846154        0.0000000000
+  1              -7.000        0.0200000000       -1.3682034976        1.3882034976
+  2              -6.000        0.0270270270        0.0270270270        0.0000000000
+  3              -5.000        0.0384615385        0.4198361257        0.3813745873
+  4              -4.000        0.0588235294        0.0588235294        0.0000000000
+  5              -3.000        0.1000000000       -0.1288247524        0.2288247524
+  6              -2.000        0.2000000000        0.2000000000        0.0000000000
+  7              -1.000        0.5000000000        0.7426929192        0.2426929192
+  8               0.000        1.0000000000        1.0000000000        0.0000000000
+  9               1.000        0.5000000000        0.7426929192        0.2426929192
+ 10               2.000        0.2000000000        0.2000000000        0.0000000000
+ 11               3.000        0.1000000000       -0.1288247524        0.2288247524
+ 12               4.000        0.0588235294        0.0588235294        0.0000000000
+ 13               5.000        0.0384615385        0.4198361257        0.3813745873
+ 14               6.000        0.0270270270        0.0270270270        0.0000000000
+ 15               7.000        0.0200000000       -1.3682034976        1.3882034976
+ 16               8.000        0.0153846154        0.0153846154        0.0000000000
+-----------------------------------------------------------------------------------
+\end{verbatim}
+
+\section{Conclusion/Findings}
+In this experiment, this method provides essentially the exact same results as
+the Maple implementation we did in Lab 06. We see that the error of our
+interpolating polynomial is 0 when evaluated at values of $x$ from which the
+polynomial was constructed, but is greater when actually interpolating values
+using our constructed polynomial.
+
+\end{document}
