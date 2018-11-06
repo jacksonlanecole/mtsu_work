@@ -1,0 +1,72 @@
+\usepackage[margin=0.7in]{geometry}
+\usepackage[pdfencoding=auto]{hyperref}
+\usepackage{bookmark}
+\usepackage{fancyhdr}
+\usepackage{pdfpages}
+\usepackage{multicol}
+\usepackage{lastpage}
+\usepackage{dirtytalk}
+\usepackage{ifthen}
+\usepackage{graphicx}
+\usepackage[margin=0.5in]{caption} % Allows use of \caption* for empty captions
+\usepackage{mdframed}
+\usepackage{enumitem}
+%\pagenumbering{gobble}
+\usepackage{bm}
+\usepackage[
+    activate={true,nocompatibility},
+    final,
+    tracking=true,
+    protrusion=true,
+    kerning=true,
+    spacing=true,
+    factor=1100,
+    stretch=10,
+    shrink=10,
+]{microtype}
+% activate={true,nocompatibility} - activate protrusion and expansion
+% final - enable microtype; use "draft" to disable
+% tracking=true, kerning=true, spacing=true - activate these techniques
+% factor=1100 - add 10% to the protrusion amount (default is 1000)
+% stretch=10, shrink=10 - reduce stretchability/shrinkability (default is 20/20)
+\SetProtrusion{encoding={*},family={bch},series={*},size={6,7}}
+              {1={ ,750},2={ ,500},3={ ,500},4={ ,500},5={ ,500},
+               6={ ,500},7={ ,600},8={ ,500},9={ ,500},0={ ,500}}
+\SetExtraKerning[unit=space]
+    {encoding={*}, family={bch}, series={*}, size={footnotesize,small,normalsize}}
+    {\textendash={400,400}, % en-dash, add more space around it
+     "28={ ,150}, % left bracket, add space from right
+     "29={150, }, % right bracket, add space from left
+     \textquotedblleft={ ,150}, % left quotation mark, space from right
+     \textquotedblright={150, }} % right quotation mark, space from left
+\SetExtraKerning[unit=space]
+   {encoding={*}, family={qhv}, series={b}, size={large,Large}}
+   {1={-200,-200}, 
+    \textendash={400,400}}
+\SetTracking{encoding={*}, shape=sc}{0}
+
+% Math
+\usepackage{amsmath}
+\usepackage{mathtools}
+\mathtoolsset{showonlyrefs}
+\usepackage{empheq}
+\usepackage{esint}
+\usepackage{mathcomp}
+
+% Symbols
+\usepackage{siunitx}
+\sisetup{load-configurations = abbreviations}
+
+% Tikz, plotting libraries,
+\usepackage{tikz}
+\usetikzlibrary{
+    decorations.markings,
+    arrows,
+    calc,
+    angles,
+    quotes,
+    decorations.pathmorphing,patterns,
+    decorations.pathreplacing}
+\tikzset{>=latex}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}

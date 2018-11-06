@@ -1,0 +1,27 @@
+% --------------------------------------------------------------------------- %
+% New Environments
+% --------------------------------------------------------------------------- %
+\newenvironment{problem}[3]{
+    \clearpage
+    \chead{\theClass: #1}
+    \setcounter{equation}{0}
+    \phantomsection
+    \addcontentsline{toc}{section}{Problem #1}
+    \noindent{\LARGE\textbf{Problem #1}}
+    \vspace{0.5em}
+    \begin{mdframed}[backgroundcolor=gray!20]
+        \vspace{6pt}
+        #2
+        \vspace{6pt}
+    \end{mdframed}
+    #3
+}
+{}
+
+\newenvironment{solution}{
+    \vspace{2em}
+    \noindent
+    {\Large\textbf{Solution}}\vspace{0.5em}\\
+}
+{}
+% --------------------------------------------------------------------------- %

@@ -1,0 +1,840 @@
+\documentclass[letterpaper, 10pt, titlepage]{article}
+\usepackage{import}
+% --------------------------------------------------------------------------- %
+% Imports
+% --------------------------------------------------------------------------- %
+\subimport{./contents/}{preamble.tex}
+\subimport{./contents/}{newcommands.tex}
+\subimport{./contents/}{custom_newcommands.tex}
+\subimport{./contents/}{newenvironments.tex}
+% --------------------------------------------------------------------------- %
+\newcommand{\pp}{\paren}
+\newcommand{\bb}{\brackets}
+\newcommand{\primed}[1]{^{
+    \ifthenelse
+    {
+        \equal{#1}{0}
+    }
+    {
+    }
+    {
+        \foreach \x in {1,...,#1}{\prime}}
+    }
+}
+
+\newcommand{\fs}[3]{\functionof{S_{#1}\primed{#2}}{#3}}
+
+% --------------------------------------------------------------------------- %
+% Document Information
+%     These are used in several places
+% --------------------------------------------------------------------------- %
+\newcommand{\theTitle}{Notes on Natural Cubic Splines}
+\newcommand{\theDueDate}{November 06, 2018}
+\newcommand{\theClass}{CSCI/MATH 3180}
+\newcommand{\theClassName}{Numerical Analysis}
+\newcommand{\theClassInstructor}{Dr. Suk Seo}
+\newcommand{\theAuthorName}{Jackson Cole}
+% --------------------------------------------------------------------------- %
+
+% --------------------------------------------------------------------------- %
+% Title page stuff
+% --------------------------------------------------------------------------- %
+\title{\theTitle\\
+\theClass: \theClassName\\
+}
+\author{\theAuthorName}
+\date{\theDueDate}
+% --------------------------------------------------------------------------- %
+
+\begin{document}
+\maketitle
+%\tableofcontents
+\subimport{./contents/}{settings.tex}
+
+% --------------------------------------------------------------------------- %
+% Additional pages of content that are given somewhere
+%     Comment out when not using to avoid problems...
+% --------------------------------------------------------------------------- %
+%\includepdf[pages=-]{addiontial_content.pdf}
+% --------------------------------------------------------------------------- %
+
+% --------------------------------------------------------------------------- %
+\subimport{./contents/}{header_setup.tex}
+
+\section{Overview/Quick Reference}
+Given data points $\pp{t_i, y_i},\enspace 0\leq i\leq n$, the natural spline
+$\functionof{S_i}{x}$, defined for $\bb{t_i, t_{i+1}}$ can be written as
+\begin{equation}
+    \functionof{S_i}{x} = A_i + B_i\pp{x - t_i} + C_i\pp{x - t_i}^2 +
+    D_i\pp{x - t_i}^3\\
+    \label{eqn: cubic spline, general}
+\end{equation}
+We can then use Horner's algorithm to express equation
+\eqref{eqn: cubic spline, general} as
+\begin{equation}
+    \functionof{S_i}{x} =
+    A_i + \pp{x - t_i}\pp{B_i + \pp{x - t_i}\pp{C_i + \pp{x - t_i}\pp{D_i}}}\\
+\end{equation}
+We can then make the following definitions
+\begin{equation}
+    h_i = t_{i+1} - t_i
+    \quad\quad
+    z_i = \functionof{S^{\prime\prime}}{t_i}
+\end{equation}
+such that $A_i, B_i, C_i,$ and $D_i$ can be expressed as
+\begin{equation}
+    \begin{aligned}
+        A_i &= y_i
+        \\
+        B_i &=
+        -\dfrac{h_i}{6}z_{i+1} - \dfrac{h_i}{3}z_i
+        + \dfrac{\pp{y_{i+1} - y_i}}{h_i}
+        \\
+        C_i &= \dfrac{z_i}{2}
+        \\
+        D_i &= \dfrac{z_{i+1} - z_i}{6h_i}
+    \end{aligned}
+\end{equation}
+
+\section{Outline of the derivation}
+\begin{enumerate}
+    \item Find a linear polynomial for $\functionof{S_i\primed{2}}{x}$ using
+        $z_i = \functionof{S_i\primed{2}}{t_i}$.
+    \item Obtain $\functionof{S_i}{x}$ by integrating
+        $\functionof{S_i\primed{2}}{x}$ twice.
+    \item Convert $\functionof{S_i}{x}$ to another form to find coefficients
+            easily.
+        \begin{enumerate}
+            \item Use $\functionof{S_i\primed{1}}{t_i} = y_i$ and
+                $\functionof{S_i\primed{1}}{t_{i+1}} = y_{i+1}$ to determine the
+                coefficients.
+            \item We have $\functionof{S_i}{x}$ now, but we don't know the $z_i$s.
+        \end{enumerate}
+    \item To find the values for $z_i$s:
+        \begin{enumerate}
+            \item Differentiate $\fs{i}{0}{x}$ to obtain $\fs{i}{1}{x}$.
+            \item Set $\fs{i}{1}{t_i} = \fs{i-1}{1}{t_i}$, which gives us a
+                system of linear equations for the $z_i$s.
+            \item Set $z_0 = z_n = 0$ for a natural cubic spline.
+        \end{enumerate}
+    \item Convert $\fs{i}{0}{x}$ into a nested form for efficient evaluation.
+\end{enumerate}
+
+\section{Derivation of expression for the natural cubic spline}
+
+\subsection*{Step 1: Find a linear polynomial for $\fs{i}{2}{x}$ using
+$z_i = \fs{}{2}{t_i}$.}
+We can assume that $\fs{i}{2}{x}$ is a linear interpolant having $\pp{t_i,z_i}$
+and $\pp{t_{i+1}, z_{i+1}}$ as endpoints. We can then find the Lagrange
+Interpolant for the two points, $\pp{t_i,z_i}$ and $\pp{t_{i+1}, z_{i+1}}$.
+\begin{equation}
+    \fs{i}{2}{x} =
+    \bb{\dfrac{\pp{x - t_{i+1}}}{\pp{t_i - t_{i+1}}}}z_i
+    +
+    \bb{\dfrac{\pp{x - t_{i}}}{\pp{t_{i+1} - t_i }}}z_{i+1}
+    \label{eqn: step 1.1}
+\end{equation}
+Now, if we let $h_i = t_{i+1} - t_i$, then we can write equation
+\eqref{eqn: step 1.1} as
+\begin{equation}
+    \fs{i}{2}{x} =
+    \bb{\dfrac{\pp{x - t_{i+1}}}{-h_i}}z_i
+    +
+    \bb{\dfrac{\pp{x - t_{i}}}{h_i}}z_{i+1}
+    \label{eqn: step 1.2}
+\end{equation}
+We can then rewrite equation \eqref{eqn: step 1.2} as
+\begin{equation}
+    \fs{i}{2}{x} =
+    \dfrac{z_{i+1}}{h_i}\pp{x - t_i}
+    + \dfrac{z_{i}}{-h_i}\pp{t_i - x}
+    \quad\quad
+    \text{where } h_i = t_{i+1} - t_i
+\end{equation}
+
+\subsection*{Step 2: Obtain $\functionof{S_i}{x}$ by integrating
+$\functionof{S_i\primed{2}}{x}$ twice.}
+In the last step, we obtained
+\begin{equation}
+    \fs{i}{2}{x} =
+    \dfrac{z_{i+1}}{h_i}\pp{x - t_i}
+    + \dfrac{z_{i}}{-h_i}\pp{t_i - x}
+    \quad\quad
+    \text{where } h_i = t_{i+1} - t_i
+\end{equation}
+If we integrate $\fs{i}{2}{x}$, we get
+\begin{equation}
+    \fs{i}{1}{x} =
+    \dfrac{z_{i+1}}{h_i}\bb{\frac{1}{2}\pp{x - t_i}^2}
+    + \dfrac{z_{i}}{-h_i}\bb{\frac{1}{2}\pp{t_{i+1} - x}^2\pp{-1}} + c
+\end{equation}
+Integrating again gives us
+\begin{equation}
+    \fs{i}{0}{x} =
+    \dfrac{z_{i+1}}{h_i}\bb{\frac{1}{6}\pp{x - t_i}^3}
+    + \dfrac{z_{i}}{h_i}\bb{\frac{1}{6}\pp{t_{i+1} - x}^3} + cx + d
+\end{equation}
+which can then be rearranged a bit to give us
+\begin{equation}
+    \fs{i}{0}{x} =
+    \dfrac{z_{i+1}}{6h_i}\pp{x - t_i}^3
+    + \dfrac{z_{i}}{6h_i}\pp{t_{i+1} - x}^3 + cx + d
+    \label{eqn: step 2.1}
+\end{equation}
+
+\subsection*{Step 3: Convert $\fs{i}{0}{x}$ into a nested form for efficient
+evaluation.}
+\begin{mdframed}
+    \textit{Note:} I'm not actually entirely sure of the method by which
+    equation \eqref{eqn: step 2.1} gets converted into equation
+    \eqref{eqn: step 3.1}, but I will just copy this line from the handout
+    and move along.
+\end{mdframed}
+\begin{equation}
+    \fs{i}{0}{x} =
+    \dfrac{z_{i+1}}{6h_i}\pp{x - t_i}^3
+    + \dfrac{z_{i}}{6h_i}\pp{t_{i+1} - x}^3 + C\pp{x - t_i} + D\pp{t_{i+1} - x}
+    \label{eqn: step 3.1}
+\end{equation}
+We can then use the boundary conditions that
+\begin{equation}
+    \fs{i}{0}{t_i} = y_i
+    \quad\text{ and }\quad
+    \fs{i}{0}{t_{i+1}} = y_{i+1}
+\end{equation}
+so that we can find expressions for the coefficients, $C_i$, and $D_i$.
+Using this first condition gives us
+\begin{equation}
+    \begin{aligned}
+        \fs{i}{0}{t_i} &= y_i
+        \\
+        &
+        = \dfrac{z_{i+1}}{6h_i}\pp{t_i - t_i}^3
+        + \dfrac{z_{i}}{6h_i}\pp{t_{i+1} - t_i}^3 + C_i\pp{t_i - t_i} +
+        D_i\pp{t_{i+1} - t_i}
+        = y_{i}
+        \\
+        &
+        =
+        \dfrac{z_{i}}{6h_i}\pp{t_{i+1} - t_i}^3
+        + D_i\pp{t_{i+1} - t_i}
+        = y_{i}
+    \end{aligned}
+\end{equation}
+And given that $h_i = t_{i+1} - t_i$
+\begin{equation}
+    \begin{aligned}
+        \dfrac{z_{i}}{6h_i}h_i^3
+        + D_ih_i
+        &= y_{i}
+        \\
+        \dfrac{z_{i}}{6}h_i^2
+        + D_ih_i
+        &= y_{i}
+        \\
+        D_ih_i
+        &= y_{i}
+        - \dfrac{z_{i}}{6}h_i^2
+        \\
+            D_i
+            &= \dfrac{y_{i}}{h_i}
+            - \dfrac{z_{i}}{6}h_i
+    \end{aligned}
+\end{equation}
+Therefore, we can say
+\begin{equation}
+    \boxed{
+        D_i
+        = \dfrac{y_{i}}{h_i}
+        - \dfrac{z_{i}}{6}h_i
+    }
+\end{equation}
+Now, we can set about finding an expression for $C_i$. Using the second
+condition, we get
+\begin{equation}
+    \begin{aligned}
+        \fs{i}{0}{t_{i+1}}
+        &=
+        \dfrac{z_{i+1}}{6h_i}\pp{t_{i+1} - t_i}^3
+        + \dfrac{z_{i}}{6h_i}\pp{t_{i+1} - t_{i+1}}^3 + C_i\pp{t_{i+1} - t_i}
+        + D\pp{t_{i+1} - t_{i+1}} = y_{i+1}
+        \\
+        &\rightarrow
+        \dfrac{z_{i+1}}{6h_i}\pp{t_{i+1} - t_{i}}^3 + C_i\pp{t_{i+1} - t_i}
+        = y_{i+1}
+        \\
+        &\rightarrow
+        \dfrac{z_{i+1}}{6h_i}h_i^3 + C_ih_i
+        = y_{i+1}
+        \\
+        &\rightarrow
+        C_ih_i
+        = y_{i+1}
+        - \dfrac{z_{i+1}}{6h_i}h_i^3
+        \\
+        &\rightarrow
+        C_i
+        = \dfrac{y_{i+1}}{h_i}
+        - \dfrac{z_{i+1}}{6}h_i
+        \\
+    \end{aligned}
+\end{equation}
+Therefore, we can say that
+\begin{equation}
+    \boxed{
+        C_i
+        =
+        \dfrac{y_{i+1}}{h_i}
+        - \dfrac{z_{i+1}}{6}h_i
+    }
+\end{equation}
+Therefore, in terms of our new expressions for $C_i$ and $D_i$, we can rewrite
+$\fs{i}{0}{x}$ as
+\begin{equation}
+    \begin{aligned}
+        \fs{i}{0}{x}
+        &=
+        \dfrac{z_{i+1}}{6h_i}\pp{x - t_i}^3
+        + \dfrac{z_{i}}{6h_i}\pp{t_{i+1} - x}^3 + C_i\pp{x - t_i} + D\pp{t_{i+1} - x}
+        \\
+        &=
+        \dfrac{z_{i+1}}{6h_i}\pp{x - t_i}^3
+        + \dfrac{z_{i}}{6h_i}\pp{t_{i+1} - x}^3
+        + \pp{
+            \dfrac{y_{i+1}}{h_i}
+            - \dfrac{z_{i+1}}{6}h_i
+            }\pp{x - t_i}
+        + \pp{\dfrac{y_{i}}{h_i}
+        - \dfrac{z_{i}}{6}h_i}\pp{t_{i+1} - x}
+    \end{aligned}
+\end{equation}
+
+
+
+
+\subsection*{Step 4: To find the values for $z_i$s:}
+\subsubsection*{Differentiate $\fs{i}{0}{x}$ to obtain $\fs{i}{1}{x}$}
+We first need to differentiate $\fs{i}{0}{x}$ to obtain $\fs{i}{1}{x}$ in terms
+of the new expressions for the coefficients. This gives us
+\begin{equation}
+    \begin{aligned}
+        \fs{i}{1}{x}
+        &=
+        \dfrac{z_{i+1}}{2h_i}\pp{x - t_i}^2
+        - \dfrac{z_{i}}{2h_i}\pp{t_{i+1} - x}^2
+        + \pp{
+            \dfrac{y_{i+1}}{h_i}
+            - \dfrac{z_{i+1}}{6}h_i
+            }
+        + -\pp{\dfrac{y_i}{h_i}
+        - \dfrac{z_{i}}{6}h_i}
+    \end{aligned}
+\end{equation}
+Finding an expression for $\fs{i - 1}{0}{x}$ and differentiating in the
+same way will give us $\fs{i-1}{1}{x}$.
+\begin{equation}
+    \begin{aligned}
+        \fs{i-1}{1}{x}
+        &=
+        \dfrac{z_{i}}{2h_{i-1}}\pp{x - t_{i - 1}}^2
+        - \dfrac{z_{i-1}}{2h_{i-1}}\pp{t_{i} - x}^2
+        + \pp{
+            \dfrac{y_{i}}{h_{i-1}}
+            - \dfrac{z_{i}}{6}h_{i-1}
+            }
+            - \pp{\dfrac{y_{i-1}}{h_{i-1}}
+            - \dfrac{z_{i-1}}{6}h_{i-1}}
+    \end{aligned}
+\end{equation}
+Notice that this expression is obtained from $\fs{i - 1}{0}{x}$, which is just
+the expression for $\fs{i}{0}{x}$ with the subscripts shifted back.
+
+\subsubsection*{Set $\fs{i}{1}{t_i} = \fs{i-1}{1}{t_i}$, which gives us a system
+of linear equations for the $z_i$s}
+We can then make use of the condition that the first derivative of a natural
+cubic spline must be continuous. This condition allows us to say that
+\begin{equation}
+    \fs{i}{1}{t_i} = \fs{i-1}{1}{t_i}
+\end{equation}
+We can then proceed from this equation
+\begin{equation}
+    \begin{aligned}
+        \fs{i}{1}{t_i}
+        &=
+        \fs{i-1}{1}{t_i}
+        \\
+        % ------------------------------------------------------------------- %
+        \dfrac{z_{i+1}}{2h_i}\pp{t_i - t_i}^2
+        - \dfrac{z_{i}}{2h_i}\pp{t_{i+1} - t_i}^2
+        &+ \pp{
+            \dfrac{y_{i+1}}{h_i}
+            - \dfrac{z_{i+1}}{6}h_i
+            }
+        + -\pp{\dfrac{y_i}{h_i}
+        - \dfrac{z_{i}}{6}h_i}
+        \\
+        &=
+        \dfrac{z_{i}}{2h_{i-1}}\pp{t_i - t_{i - 1}}^2
+        - \dfrac{z_{i-1}}{2h_{i-1}}\pp{t_{i} - t_i}^2
+        + \pp{
+            \dfrac{y_{i}}{h_{i-1}}
+            - \dfrac{z_{i}}{6}h_{i-1}
+            }
+            - \pp{\dfrac{y_{i-1}}{h_{i-1}}
+            - \dfrac{z_{i-1}}{6}h_{i-1}}
+        % ------------------------------------------------------------------- %
+        \\
+        % ------------------------------------------------------------------- %
+        - \dfrac{z_{i}}{2h_i}\pp{t_{i+1} - t_i}^2
+        &+ \pp{
+            \dfrac{y_{i+1}}{h_i}
+            - \dfrac{z_{i+1}}{6}h_i
+            }
+        + \pp{-\dfrac{y_i}{h_i}
+        +\dfrac{z_{i}}{6}h_i}
+        \\
+        &=
+        \dfrac{z_{i}}{2h_{i-1}}\pp{t_i - t_{i - 1}}^2
+        + \pp{
+            \dfrac{y_{i}}{h_{i-1}}
+            - \dfrac{z_{i}}{6}h_{i-1}
+            }
+            - \pp{\dfrac{y_{i-1}}{h_{i-1}}
+            - \dfrac{z_{i-1}}{6}h_{i-1}}
+        % ------------------------------------------------------------------- %
+        \\
+        % ------------------------------------------------------------------- %
+        - \dfrac{z_{i}}{2h_i}h_i^2
+        + \pp{
+            \dfrac{y_{i+1}}{h_i}
+            - \dfrac{z_{i+1}}{6}h_i
+            }
+        + \pp{-\dfrac{y_i}{h_i}
+        +
+        \dfrac{z_{i}}{6}h_i}
+        &=
+        \dfrac{z_{i}}{2h_{i-1}}h_{i-1}^2
+        + \pp{
+            \dfrac{y_{i}}{h_{i-1}}
+            - \dfrac{z_{i}}{6}h_{i-1}
+        }
+        -
+        \pp{
+            \dfrac{y_{i-1}}{h_{i-1}}
+            - \dfrac{z_{i-1}}{6}h_{i-1}
+        }
+        % ------------------------------------------------------------------- %
+        \\
+        % ------------------------------------------------------------------- %
+        - \dfrac{z_{i}}{2}h_i
+        + \pp{
+            \dfrac{y_{i+1}}{h_i}
+            - \dfrac{z_{i+1}}{6}h_i
+            }
+        + \pp{-\dfrac{y_i}{h_i}
+        + \dfrac{z_{i}}{6}h_i}
+        &=
+        \dfrac{z_{i}}{2}h_{i-1}
+        +
+        \pp{
+            \dfrac{y_{i}}{h_{i-1}}
+            - \dfrac{z_{i}}{6}h_{i-1}
+        }
+        -
+        \pp{
+            \dfrac{y_{i-1}}{h_{i-1}}
+            - \dfrac{z_{i-1}}{6}h_{i-1}
+        }
+        % ------------------------------------------------------------------- %
+        \\
+        % ------------------------------------------------------------------- %
+        - \dfrac{z_{i}}{2}h_i
+        +
+            \dfrac{y_{i+1}}{h_i}
+            - \dfrac{z_{i+1}}{6}h_i
+        - \dfrac{y_i}{h_i}
+        + \dfrac{z_{i}}{6}h_i
+        &=
+        \dfrac{z_{i}}{2}h_{i-1}
+        +
+            \dfrac{y_{i}}{h_{i-1}}
+            - \dfrac{z_{i}}{6}h_{i-1}
+            - \dfrac{y_{i-1}}{h_{i-1}}
+            + \dfrac{z_{i-1}}{6}h_{i-1}
+        % ------------------------------------------------------------------- %
+        \\
+        % ------------------------------------------------------------------- %
+        - \dfrac{h_{i}}{2}z_i
+        +
+            \dfrac{y_{i+1}}{h_i}
+            - \dfrac{h_{i}}{6}z_{i+1}
+        - \dfrac{y_{i}}{h_i}
+        + \dfrac{z_{i}}{6}h_i
+        &=
+        \dfrac{h_{i-1}}{2}z_{i}
+        +
+            \dfrac{y_{i}}{h_{i-1}}
+            - \dfrac{h_{i-1}}{6}z_{i}
+            - \dfrac{y_{i-1}}{h_{i-1}}
+            + \dfrac{h_{i-1}}{6}z_{i-1}
+        % ------------------------------------------------------------------- %
+        \\
+        % ------------------------------------------------------------------- %
+        - \dfrac{h_{i}}{2}z_i
+        - \dfrac{h_{i}}{6}z_{i+1}
+        + \dfrac{z_{i}}{6}h_i
+        + \dfrac{y_{i+1}}{h_i}
+        - \dfrac{y_i}{h_i}
+        &=
+        \dfrac{h_{i-1}}{2}z_{i}
+        - \dfrac{h_{i-1}}{6}z_{i}
+        + \dfrac{h_{i-1}}{6}z_{i-1}
+        + \dfrac{y_{i}}{h_{i-1}}
+        - \dfrac{y_{i-1}}{h_{i-1}}
+        % ------------------------------------------------------------------- %
+        \\
+        % ------------------------------------------------------------------- %
+    \end{aligned}
+\end{equation}
+Now, we can rewrite this last equation such that each term containing $z$ has
+the form $\alpha z_i$, where $\alpha$ is some coefficient.
+\begin{equation}
+    - \dfrac{h_{i}}{2}z_i
+    - \dfrac{h_{i}}{6}z_{i+1}
+    + \dfrac{h_{i}}{6}z_i
+    + \dfrac{y_{i+1}}{h_i}
+    - \dfrac{y_i}{h_i}
+    \quad=\quad
+    \dfrac{h_{i-1}}{2}z_{i}
+    - \dfrac{h_{i-1}}{6}z_{i}
+    + \dfrac{h_{i-1}}{6}z_{i-1}
+    + \dfrac{y_{i}}{h_{i-1}}
+    - \dfrac{y_{i-1}}{h_{i-1}}
+\end{equation}
+We can now move all terms containing $z$ to the left-hand side, and all terms
+not containing $z$ to the right-hand side.
+\begin{equation}
+    - \dfrac{h_{i}}{2}z_i
+    - \dfrac{h_{i}}{6}z_{i+1}
+    + \dfrac{h_{i}}{6}z_i
+    - \dfrac{h_{i-1}}{2}z_{i}
+    + \dfrac{h_{i-1}}{6}z_{i}
+    - \dfrac{h_{i-1}}{6}z_{i-1}
+    \quad=\quad
+    + \dfrac{y_{i}}{h_{i-1}}
+    - \dfrac{y_{i-1}}{h_{i-1}}
+    - \dfrac{y_{i+1}}{h_i}
+    + \dfrac{y_i}{h_i}
+\end{equation}
+Combining like terms gives us
+\begin{equation}
+    \begin{aligned}
+        - \dfrac{h_{i}}{2}z_i
+        + \dfrac{h_{i}}{6}z_i
+        %
+        - \dfrac{h_{i-1}}{2}z_{i}
+        + \dfrac{h_{i-1}}{6}z_{i}
+        %
+        - \dfrac{h_{i}}{6}z_{i+1}
+        - \dfrac{h_{i-1}}{6}z_{i-1}
+        \quad&=\quad
+        - \dfrac{y_{i+1}}{h_i}
+        + \dfrac{y_i}{h_i}
+        %
+        + \dfrac{y_{i}}{h_{i-1}}
+        - \dfrac{y_{i-1}}{h_{i-1}}
+        % ------------------------------------------------------------------- %
+        \\
+        % ------------------------------------------------------------------- %
+        - \dfrac{3h_{i}}{6}z_i
+        + \dfrac{h_{i}}{6}z_i
+        %
+        - \dfrac{3h_{i-1}}{6}z_{i}
+        + \dfrac{h_{i-1}}{6}z_{i}
+        %
+        - \dfrac{h_{i}}{6}z_{i+1}
+        - \dfrac{h_{i-1}}{6}z_{i-1}
+        \quad&=\quad
+        \dfrac{1}{h_i}\pp{
+            - y_{i+1}
+            + y_i
+        }
+        %
+        + \dfrac{1}{h_{i-1}}\pp{
+            y_{i}
+            - y_{i-1}
+        }
+        % ------------------------------------------------------------------- %
+        \\
+        % ------------------------------------------------------------------- %
+        - \dfrac{2h_{i}}{6}z_i
+        %
+        - \dfrac{2h_{i-1}}{6}z_{i}
+        %
+        - \dfrac{h_{i}}{6}z_{i+1}
+        - \dfrac{h_{i-1}}{6}z_{i-1}
+        %
+        \quad&=\quad
+        %
+        \dfrac{1}{h_i}\pp{
+            - y_{i+1}
+            + y_i
+        }
+        %
+        + \dfrac{1}{h_{i-1}}\pp{
+            y_{i}
+            - y_{i-1}
+        }
+        % ------------------------------------------------------------------- %
+        \\
+        % ------------------------------------------------------------------- %
+        2h_{i}z_i
+        %
+        + 2h_{i-1}z_{i}
+        %
+        + h_{i}z_{i+1}
+        + h_{i-1}z_{i-1}
+        %
+        \quad&=\quad
+        %
+        \dfrac{1}{6}\bb{
+            \dfrac{1}{h_i}\pp{
+                y_{i+1}
+                - y_i
+            }
+            %
+            - \dfrac{1}{h_{i-1}}\pp{
+                y_{i}
+                - y_{i-1}
+            }
+        }
+        % ------------------------------------------------------------------- %
+        \\
+        % ------------------------------------------------------------------- %
+        h_{i-1}z_{i-1}
+        + 2\pp{
+            h_{i}
+            %
+            + h_{i-1}
+        }
+        %
+        + h_{i}z_{i+1}
+        %
+        \quad&=\quad
+        %
+        \dfrac{1}{6}\bb{
+            \dfrac{1}{h_i}\pp{
+                y_{i+1}
+                - y_i
+            }
+            %
+            - \dfrac{1}{h_{i-1}}\pp{
+                y_{i}
+                - y_{i-1}
+            }
+        }
+        % ------------------------------------------------------------------- %
+    \end{aligned}
+\end{equation}
+
+\subsubsection*{Set $z_0 = z_n = 0$ for a natural cubic spline}
+We can now consider the fact that at the left and right exterior points, the
+value of $\fs{}{2}{x} \equiv 0$. In our convention here, this is equivalent to
+setting $z_0 = z_n \equiv 0$. Then, we can make the following definitions
+\begin{equation}
+    u_i = 2\pp{h_{i-1} + h_i} \quad\text{ and }\quad
+    v_i =
+        \dfrac{1}{6}\bb{
+            \dfrac{1}{h_i}\pp{
+                y_{i+1}
+                - y_i
+            }
+            %
+            - \dfrac{1}{h_{i-1}}\pp{
+                y_{i}
+                - y_{i-1}
+            }
+        }
+\end{equation}
+At this point, our definitions allow us to populate a system of linear
+equations, which we can then solve by other means.
+\begin{equation}
+    \begin{array}{ccccccl}
+        h_0z_0 & + & u_1z_1  & + & h_1z_2 & = &    v_1\\
+        h_1z_1 & + & u_2z_2  & + & h_2z_3 & = &    v_2\\
+        h_2z_2 & + & u_3z_3  & + & h_3z_4 & = &    v_2\\
+        \vdots &   & \vdots  &   & \vdots &   & \vdots\\
+        h_{n-2}z_{n-2} & + & u_{n-1}z_{n-1} & + & h_{n-1}z_n & = & v_{n-1}\\
+    \end{array}
+\end{equation}
+If we notice the shifting indices, it should be clear that this can naturally be
+expressed as a tridiagonal system of equations, which can then be solved
+efficiently with tridiagonal methods.
+
+
+\subsection*{Step 5: Convert $\fs{i}{0}{x}$ into a nested form for efficient
+evaluation.}
+We should first express $\fs{i}{0}{x}$ using Horner's algorithm, which we showed
+earlier in this derivation.
+\begin{equation}
+    \functionof{S_i}{x} =
+    A_i + \pp{x - t_i}\pp{B_i + \pp{x - t_i}\pp{C_i + \pp{x - t_i}\pp{D_i}}}
+\end{equation}
+The reason for doing this is not purely for computational efficiency, but also
+for allowing us to have a more convenient form to work with in this next step.
+
+If we perform a Taylor expansion of $\fs{i}{0}{x}$ about $t_i$, we get that
+\begin{equation}
+    \fs{i}{0}{x} = \fs{i}{0}{t_i} + \fs{i}{1}{t_i}\pp{x - t_i}
+    + \dfrac{\fs{i}{2}{t_i}}{2!}\pp{x - t_i}^2
+    + \dfrac{\fs{i}{3}{t_i}}{3!}\pp{x - t_i}^3
+\end{equation}
+Actually, the form mentioned before isn't super helpful in this context.
+The assumed form of the cubic spline is
+\begin{equation}
+    \functionof{S_i}{x} =
+    A_i + B_i\pp{x - t_i} + C_i\pp{x - t_i}^2 + D_i\pp{x - t_i}^3
+\end{equation}
+Now, we can see that
+\begin{equation}
+        A_i = \fs{i}{0}{t_i}
+        \quad\quad
+        B_i = \fs{i}{1}{t_i}
+        \quad\quad
+        C_i = \dfrac{\fs{i}{2}{t_i}}{2!}
+        \quad\quad
+        D_i = \dfrac{\fs{i}{3}{t_i}}{3!}
+\end{equation}
+Now solving for $A_i$:
+\begin{equation}
+    \begin{aligned}
+        A_i &= \fs{i}{0}{t_i}\\
+        &=
+        \dfrac{z_{i+1}}{6h_i}\pp{t_i - t_i}^3
+        + \dfrac{z_{i}}{6h_i}\pp{t_{i+1} - t_i}^3
+        + \pp{
+            \dfrac{y_{i+1}}{h_i}
+            - \dfrac{z_{i+1}}{6}h_i
+            }\pp{t_i - t_i}
+        + \pp{\dfrac{y_i}{h_i}
+        - \dfrac{z_{i}}{6}h_i}\pp{t_{i+1} - t_i}
+        \\
+        &=
+        \dfrac{z_{i}}{6}h_i^2
+        + \pp{\dfrac{y_i}{h_i}
+        - \dfrac{z_{i}}{6}h_i}\pp{h_i}
+        \\
+        &=
+        y_i
+    \end{aligned}
+\end{equation}
+Now solving for $B_i$:
+\begin{equation}
+    \begin{aligned}
+        B_i &= \fs{i}{1}{t_i}
+        \\
+        &=
+        - \dfrac{h_{i}}{2}z_i
+        - \dfrac{h_{i}}{6}z_{i+1}
+        + \dfrac{h_{i}}{6}z_i
+        + \dfrac{y_{i+1}}{h_i}
+        - \dfrac{y_i}{h_i}
+        \\
+        &=
+        - \dfrac{h_{i}}{6}z_{i+1}
+        + \dfrac{h_{i}}{6}z_i
+        - \dfrac{3h_{i}}{6}z_i
+        + \dfrac{y_{i+1} - y_i}{h_i}
+        \\
+        &=
+        - \dfrac{h_{i}}{6}z_{i+1}
+        - \dfrac{2h_{i}}{6}z_i
+        + \dfrac{y_{i+1} - y_i}{h_i}
+        \\
+        &=
+        - \dfrac{h_{i}}{6}z_{i+1}
+        - \dfrac{h_{i}}{3}z_i
+        + \dfrac{y_{i+1} - y_i}{h_i}
+    \end{aligned}
+\end{equation}
+Now solving for $C_i$:
+\begin{equation}
+    \begin{aligned}
+        C_i &= \left.\dfrac{\fs{i}{2}{x}}{2!}\right|_{x=t_i}
+        \\
+        &=
+        \left.\dfrac{1}{2}\bb{
+            \dfrac{d}{dx}\bb{
+            \dfrac{z_{i+1}}{2h_i}\pp{x - t_i}^2
+            - \dfrac{z_{i}}{2h_i}\pp{t_{i+1} - x}^2
+            + \pp{
+                \dfrac{y_{i+1}}{h_i}
+                - \dfrac{z_{i+1}}{6}h_i
+                }
+            + -\pp{\dfrac{y_i}{h_i}
+            - \dfrac{z_{i}}{6}h_i}
+            }
+        }
+        \right|_{x=t_i}
+        \\
+        &=
+        \left.
+        \dfrac{1}{2}\bb{
+            \dfrac{z_{i+1}}{h_i}\pp{x - t_i}
+            + \dfrac{z_{i}}{h_i}\pp{t_{i+1} - x}
+        }
+        \right|_{x=t_i}
+        \\
+        &=
+        \dfrac{1}{2}\bb{
+            \dfrac{z_{i+1}}{h_i}\pp{t_i - t_i}
+            + \dfrac{z_{i}}{h_i}\pp{t_{i+1} - t_i}
+        }
+        \\
+        &=
+        \dfrac{1}{2}\bb{
+            z_{i}
+        }
+        \\
+        &=
+        \dfrac{z_i}{2}
+    \end{aligned}
+\end{equation}
+Now solving for $D_i$ by taking the second derivative from solving for $C_i$ and
+differentiating:
+\begin{equation}
+    \begin{aligned}
+        D_i &= \dfrac{\fs{i}{3}{t_i}}{3!}
+        \\
+        &=
+        \left.
+        \dfrac{1}{6}\bb{
+            \dfrac{d}{dx}\bb{
+                \dfrac{z_{i+1}}{h_i}\pp{x - t_i}
+                + \dfrac{z_{i}}{h_i}\pp{t_{i+1} - x}
+            }
+        }
+        \right|_{x=t_i}
+        \\
+        &=
+        \left.
+        \dfrac{1}{6}\bb{
+                \dfrac{z_{i+1}}{h_i}
+                - \dfrac{z_{i}}{h_i}
+        }
+        \right|_{x=t_i}
+        \\
+        &= \dfrac{z_{i+1} - z_i}{6h_i}
+    \end{aligned}
+\end{equation}
+
+
+
+
+
+
+
+
+
+
+\end{document}

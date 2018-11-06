@@ -1,0 +1,53 @@
+% --------------------------------------------------------------------------- %
+% Essential newcommands
+% --------------------------------------------------------------------------- %
+% \sn: scientific notation
+\newcommand{\sn}[2]{#1\times10^{#2}}
+% \functionof: \functionof{f}{t, x} = f(t, x)
+\newcommand{\functionof}[2]{#1\left(#2\right)}
+% \unit: makes a unit vector symbol out of the argument
+\newcommand{\unit}[1]{\,\hat{\bm{#1}}}
+% \vect: makes a bold vector
+\newcommand{\vect}[1]{\mathbf{#1}}
+% \units: this thing is great for writing units inside of math mode
+\newcommand{\units}[1]{\,\text{#1}}
+% \fracunits: this thing is great for writing units that must be in fractions
+%     - The first argument is either \frac or \dfrac, depending on which
+%     fractional style you want. I assume you could also use other fractional
+%     styles
+\newcommand{\fracunits}[3]{#1{\units{#2}}{\units{#3}}}
+
+% The following commands are easier than writing \left( and \right)
+% Instead, just write \paren{arg}, \brackets{arg}, etc.
+\newcommand{\paren}[1]{\left(#1\right)}
+\newcommand{\brackets}[1]{\left[#1\right]}
+\newcommand{\anglers}[1]{\langle #1 \rangle}
+
+% The following commands add parentheses to the original commands, or just make
+% them work like I think they should work.
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\factorial}[1]{#1!}
+\newcommand{\factorialp}[1]{\factorial{\paren{#1}}}
+\newcommand{\lnp}[1]{\ln{\paren{#1}}}
+\newcommand{\logten}[1]{\log_{10}\paren{#1}}
+\newcommand{\sinp}[1]{\sin{\paren{#1}}}
+\newcommand{\cosp}[1]{\cos{\paren{#1}}}
+\newcommand{\tanp}[1]{\tan{\paren{#1}}}
+\newcommand{\expp}[1]{\exp\paren{#1}}
+\newcommand{\integral}[2]{\int_{#1}^{#2}}
+\newcommand{\summ}[2]{\sum_{#1}^{#2}}
+\newcommand{\deriv}[2]{\dfrac{d #1}{d #2}}
+
+\newcommand{\degrees}[1]{\,\degree\units{#1}}
+
+% some physics specific symbols (I need to find better symbols)
+\newcommand{\lagr}{\mathcal{L}}
+\newcommand{\ham}{\mathcal{H}}
+
+% Some partial derivative commands that were useful during E&M
+\newcommand{\partialwoa}[1]{\dfrac{\partial}{\partial #1}}
+\newcommand{\partiald}[2]{\dfrac{\partial}{\partial #2}\brackets{#1}}
+\newcommand{\partialdd}[2]{\dfrac{\partial^2}{\partial^2 #2}\brackets{#1}}
+
+% I think this is a triple integral over a whole sphere
+\newcommand{\tsi}[1]{\int_{\phi=0}^{2\pi}\int_{\theta=0}^{\pi}\int_{r=0}^{#1}}
