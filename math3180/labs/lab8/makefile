@@ -1,14 +1,15 @@
 # Muchas gracias a Hilton Lipschitz por este makefile. Se ecuentra a
 # https://hiltmon.com/blog/2013/07/03/a-simple-c-plus-plus-project-structure/
 CC = g++
-CFLAGS = -std=c++11
+CFLAGS = -std=c++17
 
 SRCDIR   := src
 BUILDDIR := build
+BINDIR   := bin
 TARGET   := bin/main
 
 SRCEXT   := cpp
-SOURCES  := $(shell find $(SRCDIR) -type f -name \*.$(SRCEXT))
+SOURCES  := $(shell find $(SRCDIR) -maxdepth 1 -type f -name \*.$(SRCEXT))
 OBJECTS  := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
 INC      := -I include
 
@@ -23,6 +24,7 @@ RM = rm -rf
 
 $(TARGET): $(OBJECTS)
 	@echo "Linking..."
+	@mkdir -p $(BINDIR)
 	@echo " $(CC) $^ -o $(TARGET) $(LIB)"; $(CC) $^ -o $(TARGET) $(LIB)
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
