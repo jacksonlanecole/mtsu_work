@@ -12,13 +12,13 @@
  *        dimensional arrays are allowed.
  *     4. Program input: not required.
  *     5. Program output:
- *        - Data points, (ti, yi), 0 ≤ i ≤ n
- *        - Tri-diagonal system for zi, 1 ≤ i ≤ n-1 before Forward Elimination
- *        - Tri-diagonal system for zi, 1 ≤ i ≤ n-1 after Forward Elimination
+ *        - Data points, (ti, yi), 0 <= i <= n
+ *        - Tri-diagonal system for zi, 1 <= i <= n-1 before Forward Elimination
+ *        - Tri-diagonal system for zi, 1 <= i <= n-1 after Forward Elimination
  *        - Solution for zi, 0 ≤ i ≤ n after Back Substitution
- *        - Coefficients Ai, Bi, Ci, Di, 0 ≤ i ≤ n-1 for Natural Cubic Spline
+ *        - Coefficients Ai, Bi, Ci, Di, 0 <= i <= n-1 for Natural Cubic Spline
  *              in nested form
- *        - Natural Cubic Spline, Si, 0 ≤ i ≤ n-1 in nested form
+ *        - Natural Cubic Spline, Si, 0 <= i <= n-1 in nested form
  *        - Table containing x, f(x), S(x), and |f(x)-S(x)|
  *              for x = -8, -6, -5, -4, -3,-2, -1, 0, 1, 2, 3, 4, 5, 6, 8.
  *  ------------------------------------------------------------------------ */
