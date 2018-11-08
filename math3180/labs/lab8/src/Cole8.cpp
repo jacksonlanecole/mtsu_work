@@ -15,7 +15,7 @@
  *        - Data points, (ti, yi), 0 <= i <= n
  *        - Tri-diagonal system for zi, 1 <= i <= n-1 before Forward Elimination
  *        - Tri-diagonal system for zi, 1 <= i <= n-1 after Forward Elimination
- *        - Solution for zi, 0 ≤ i ≤ n after Back Substitution
+ *        - Solution for zi, 0 <= i <= n after Back Substitution
  *        - Coefficients Ai, Bi, Ci, Di, 0 <= i <= n-1 for Natural Cubic Spline
  *              in nested form
  *        - Natural Cubic Spline, Si, 0 <= i <= n-1 in nested form
