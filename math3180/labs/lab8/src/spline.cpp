@@ -182,13 +182,13 @@ void Spline::printSplines() {
 	for (int i = 0; i < pieces; i++) {
 		cout << "S" << i << " : ";
 		cout << setw(width) << right;
-		cout << coeffVec[i].A;
-		cout << " + (";
-		cout << setw(width) << coeffVec[i].B << " + (" << setw(4) << dataVec[i].t << ")*";
-		cout << "(";
-		cout << setw(width) << coeffVec[i].C << " + (" << setw(4) << dataVec[i].t << ")*";
-		cout << "(";
-		cout << setw(width) << coeffVec[i].D << " + (" << setw(4) << dataVec[i].t << ")";
+		cout << coeffVec[i].A << " + (x - " << dataVec[i].t << ")";
+		cout << "*(";
+		cout << setw(width) << coeffVec[i].B << " + (x - " << setw(3) << dataVec[i].t << ")";
+		cout << "*(";
+		cout << setw(width) << coeffVec[i].C << " + (x - " << setw(3) << dataVec[i].t << ")";
+		cout << "*(";
+		cout << setw(width) << coeffVec[i].D;
 		cout << ")))" << endl;
 	}
 }

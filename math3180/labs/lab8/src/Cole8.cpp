@@ -53,10 +53,12 @@ int main() {
 	// --------------------------------------------------------------------- //
 	// Variable Declarations
 	// --------------------------------------------------------------------- //
-	Array1D inVec {-8., -6., -4., -2., 0., 2., 4., 6., 8};
-	Array1D testVec {-8., -6., -5., -4., -3., -2., -1., 0., 1., 2., 3., 4., 5., 6., 8.};
+	//Array1D inVec {-8., -6., -4., -2., 0., 2., 4., 6., 8};
+	//Array1D testVec {-8., -6., -5., -4., -3., -2., -1., 0., 1., 2., 3., 4., 5., 6., 8.};
 	//Array1D inVec {-4., -2., 0., 2., 4.};
 	//Array1D testVec {-4., -3., -2., -1., 0., 1., 2., 3., 4.};
+	Array1D inVec {-6., -4., -2., 0., 2., 4., 6.,};
+	Array1D testVec {-6., -4., -2., 0., 2., 4., 6.,};
 
 	Array1D inVecResults;
 
@@ -100,9 +102,9 @@ int main() {
 	cout << string(80, '-') << endl;
 
 	cout << "\nNatural Cubic Spline in nested form" << endl;
-	cout << string(100, '-') << endl;
+	cout << string(110, '-') << endl;
 	spline3.printSplines();
-	cout << string(100, '-') << endl;
+	cout << string(110, '-') << endl;
 
 	cout << "\nEvaluation of Original and Spline functions and the absolute errors" << endl;
 	approxVec = spline3.Approximate(testVec);
